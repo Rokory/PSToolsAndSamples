@@ -66,6 +66,10 @@ Requires the module EODownload.
 
 Downloads and optionally installs SQL Server 2019 Developer or Express editition. Demonstrates the support of the -WhatIf parameter.
 
+#### Install-SqlServerManagementStudio
+
+Downloads and installs SQL Server Management Studio 18.4.
+
 #### Connect-SqlServer, Invoke-SqlCommand, New-SqlDatabase, Get-SqlDataReader
 
 Demonstrate useful patterns for working with SQL databases in PowerShell.

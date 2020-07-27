@@ -168,6 +168,130 @@ function Install-SqlServer {
 
 <#
     .SYNOPSIS
+    Downloads and installs SQL Server Management Studio
+#>
+
+function Install-SqlServerManagementStudio {
+    [CmdletBinding(SupportsShouldProcess = $true)]
+    param (
+        # Language selection for installation and download
+        [ValidateSet(
+            'CHS', 
+            'CHT', 
+            'DEU',
+            'ENU',
+            'FRA',
+            'ITA',
+            'JPN',
+            'KOR', 
+            'PTB',
+            'RUS',
+            'ESN'
+        )]
+        [string]
+        $Language = 'ENU',
+
+        # Specifies the location of the bootstrap downloader
+        [String]
+        $BootstrapPath = (
+            New-Object -ComObject Shell.Application
+        ).NameSpace(
+            'shell:Downloads'
+        ).Self.Path,
+
+        # Suppress any attempts to restart
+        [Parameter()]
+        [switch]
+        [bool]
+        $NoRestart,
+
+        # Logs to a specific file. By default a log file is created in %TEMP%
+        [Parameter()]
+        [string]
+        $Log
+    )
+
+    #region Download SQL Server Management Studio
+
+    $BootstrapPath = Join-Path -Path $BootstrapPath -ChildPath 'SSMS-Setup-'
+    switch ($Language) {
+        'CHS' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x804'
+        }
+        'CHT' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x404'
+        }
+        'ENU' { 
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x409'
+         }
+         'FRA' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x40c'
+         }
+         'DEU' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x407'
+         }
+         'ITA' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x410'
+         }
+         'JPN' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x411'
+         }
+         'KOR' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x412'
+         }
+         'PTB' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x416'
+         }
+         'RUS' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x419'
+         }
+         'ESN' {
+            $downloadPath = `
+                'https://go.microsoft.com/fwlink/?linkid=2125901&clcid=0x40a'
+         }
+    }
+    $BootstrapPath += "$Language.exe"
+    $parameters = @{ Source = $downloadPath }
+    if (-not [String]::IsNullOrWhiteSpace($BootstrapPath)) {
+        $parameters.Add('Destination', $BootstrapPath)
+    }
+    $setupFile = Invoke-BitsTransfer @parameters
+
+    #endregion
+
+    #region Build the parameters
+
+    $parameters = '/install /passive'
+    if ($NoRestart) {
+        $parameters += ' /norestart'
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($Log)) {
+        $parameters += " /log ""$Log"""
+    }
+
+    #endregion
+
+    # Download or install
+    if ($PSCmdlet.ShouldProcess(
+        "Executing downloaded file $setupFile with parameters $parameters"
+    )) {
+        Start-Process -FilePath $setupFile -ArgumentList $parameters -Wait
+    }
+}
+
+<#
+    .SYNOPSIS
     Opens a connection to SQL server and returns the connection object
 #>
 function Connect-SqlServer {
