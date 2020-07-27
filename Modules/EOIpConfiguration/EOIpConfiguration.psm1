@@ -44,17 +44,21 @@ function Set-NetIpConfiguration {
         
         [Parameter(ParameterSetName='NonDHCP', Mandatory=$true)]
         [String]
+        [ValidatePattern('(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?!$)|$)){4}')]
         $IpAddress,
 
         [Parameter(ParameterSetName='NonDHCP', Mandatory=$true)]
+        [ValidateRange(1, 23)]
         [byte]
         $PrefixLength,
 
         [Parameter(ParameterSetName='NonDHCP')]
+        [ValidatePattern('(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?!$)|$)){4}')]
         [String]
         $DefaultGateway,
 
         [Parameter(ParameterSetName='NonDHCP')]
+        [ValidatePattern('(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)(?:\.(?!$)|$)){4}')]
         [String[]]
         $DnsServerAddresses
     )
