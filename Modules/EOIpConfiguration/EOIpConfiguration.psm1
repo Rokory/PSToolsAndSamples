@@ -31,7 +31,7 @@ Set-NetIpConfiguration -InterfaceAlias Ethernet -Dhcp
 Configures the network interface 'Ethernet' for DHCP.
 #>
 function Set-NetIpConfiguration {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
     param (
         [Parameter(Mandatory=$true)]
         [String]
@@ -48,7 +48,7 @@ function Set-NetIpConfiguration {
         $IpAddress,
 
         [Parameter(ParameterSetName='NonDHCP', Mandatory=$true)]
-        [ValidateRange(1, 23)]
+        [ValidateRange(1, 31)]
         [byte]
         $PrefixLength,
 
@@ -63,24 +63,54 @@ function Set-NetIpConfiguration {
         $DnsServerAddresses
     )
 
-    Get-NetIPAddress -InterfaceAlias $InterfaceAlias | Remove-NetIPAddress -Confirm:$false
+    Get-NetIPAddress -InterfaceAlias $InterfaceAlias -AddressFamily IPv4 | 
+    Remove-NetIPAddress -WhatIf:$WhatIfPreference
     
-    Get-NetRoute -InterfaceAlias $InterfaceAlias -DestinationPrefix 0.0.0.0/* -ErrorAction SilentlyContinue | 
-    Remove-NetRoute -Confirm:$false
+    Get-NetRoute `
+        -InterfaceAlias $InterfaceAlias `
+        -DestinationPrefix 0.0.0.0/* `
+        -ErrorAction SilentlyContinue | 
+    Remove-NetRoute -WhatIf:$WhatIfPreference
 
     switch ($PSCmdlet.ParameterSetName) {
         DHCP {
-            Set-NetIPInterface -Dhcp Enabled -InterfaceAlias $InterfaceAlias
-            Set-DnsClientServerAddress -ResetServerAddresses -InterfaceAlias $InterfaceAlias
+            if ($PSCmdlet.ShouldProcess(
+                "NetIPInterface -InterfaceAlias $InterfaceAlias", 'Set -Dhcp Enabled')
+            ) {
+                Set-NetIPInterface -Dhcp Enabled -InterfaceAlias $InterfaceAlias
+            }
+            if ($PSCmdlet.ShouldProcess(
+                "DnsClientServerAddress -InterfaceAlias $InterfaceAlias", 
+                'Set -ResetServerAddresses'
+            )) {
+                Set-DnsClientServerAddress `
+                    -ResetServerAddresses `
+                    -InterfaceAlias $InterfaceAlias
+            }
         }
         NonDHCP {
-            Set-NetIPInterface -Dhcp Disabled -InterfaceAlias $InterfaceAlias
-            New-NetIPAddress `
-                -InterfaceAlias $InterfaceAlias `
-                -IPAddress $IpAddress `
-                -PrefixLength $PrefixLength `
-                -AddressFamily IPv4
-            if ($null -ne $DefaultGateway) {
+            if ($PSCmdlet.ShouldProcess(
+                "NetIPInterface -InterfaceAlias $InterfaceAlias", 
+                'Set -Dhcp Disabled'
+            )) {
+                Set-NetIPInterface -Dhcp Disabled -InterfaceAlias $InterfaceAlias
+            }
+            if ($PSCmdlet.ShouldProcess(
+                "NetIPAddress -InterfaceAlias $InterfaceAlias -IPAddress $IpAddress -PrefixLength $PrefixLength -AddressFamily IPV4",
+                "New"
+            )) {
+                New-NetIPAddress `
+                    -InterfaceAlias $InterfaceAlias `
+                    -IPAddress $IpAddress `
+                    -PrefixLength $PrefixLength `
+                    -AddressFamily IPv4
+            }
+            if ($null -ne $DefaultGateway `
+                -and $PSCmdlet.ShouldProcess(
+                    "NetRoute -InterfaceAlias $InterfaceAlias -NextHop $DefaultGateway -RouteMetrix 0 -AddressFamily IPv4",
+                    "New"
+                )
+            ) {
                 New-NetRoute `
                     -InterfaceAlias $InterfaceAlias `
                     -DestinationPrefix 0.0.0.0/0 `
@@ -89,8 +119,15 @@ function Set-NetIpConfiguration {
                     -AddressFamily IPv4 `
                 > $null
             }
-            if ($null -ne $DnsServerAddresses) {
-                Set-DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $DnsServerAddresses
+            if ($null -ne $DnsServerAddresses `
+                -and $PSCmdlet.ShouldProcess(
+                    "DnsClientServerAddress -InterfaceAlias $InterfaceAlias -ServerAddresses $DnsServerAddresses",
+                    "Set"
+                )
+            ) {
+                Set-DnsClientServerAddress `
+                    -InterfaceAlias $InterfaceAlias `
+                    -ServerAddresses $DnsServerAddresses
             }
         }
     }
