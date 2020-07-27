@@ -23,10 +23,3 @@ Function Do-Something {
 }
 
 'A', 'B', 'C' | Do-Something
-
-try {
-    Remove-Item bla -ErrorAction Stop
-}
-catch {
-    Write-Host $_.Exception.GetType()
-}
