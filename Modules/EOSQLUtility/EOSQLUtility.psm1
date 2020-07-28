@@ -1,10 +1,31 @@
 <#
     .SYNOPSIS
     Downloads and optionally installs SQL Server 2019
+    .DESCRIPTION
+    If you specify the switch -Download, the setup sources for SQL Server 2019
+    are downloaded only. Without the switch, SQL Server is downloaded and
+    installed.
+    .PARAMETER Download
+    Use this parameter to download SQL server without installing it.
+    .PARAMETER Edition
+    Choose between Developer or Express edition. Defaults to Express.
+    .PARAMETER Language
+    Choose the language for SQL Server. Defaults to en-US. Supported languages
+    are zh-TW, zh-CN, de-DE, en-US, fr-FR, it-IT, ko-KR, pt-BR, ru-RU, and
+    es-ES.
+    .PARAMETER InstallPath
+    Specifies the location of the SQL server instance including data files.
+    .PARAMETER MediaPath
+    Specifies the location for the downloaded media files
+    .PARAMETER MediaType
+    Specifies the media to be downloaded. Can be either CAB or ISO. Defaults
+    to CAB. In install mode, MediaType is always CAB.
+    .PARAMETER BootstrapPath
+    Specifies the location where the downloader file should be saved to.
+    Defaults to the Download folder of the current user.
+    .PARAMETER Configuration
+    Specifies an optional configuration file to be used to install SQL Server.
 #>
-
-#requires -Modules EODownload
-
 function Install-SqlServer {
     # Disables the default behaviour of assigning
     # position numbers to parameters in the order in which the parameters are
