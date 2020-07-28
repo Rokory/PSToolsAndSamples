@@ -8,10 +8,6 @@ This repository contains some small scripts, modules and samples.
 
 This script demonstrates the usage of object-oriented features in PowerShell. It is recommended to run this in debug mode to understand what's going on. The comments will help understanding the concepts.
 
-### Pipeline.ps1
-
-This is a short example on how to process items from the pipeline without using any loop.
-
 ### Setup-CIDatabase.ps1 and Update-CIAssets.ps1
 
 #### Synopsis
@@ -48,7 +44,7 @@ To find information about useage, use ```Get-Help``` followed by the cmdlet in t
 
 #### Invoke-BitsTransfer
 
-Simple cmdlet to start a synchronous download of a file using BITS. Demonstrates the usage of a progress bar.
+Simple cmdlet to start a synchronous download of a file using BITS. Demonstrates handling of multiple pipeline values and the usage of a progress bar.
 
 ### EOIpConfiguration
 
