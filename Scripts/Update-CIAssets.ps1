@@ -36,7 +36,7 @@ $dataReader = Get-SqlDataReader -Query $query -Connection $sqlConnection
 
 if ($dataReader.Read()) {
     $operatingSystemId = $dataReader['Id']
-    Write-Host "Name: $($dataReader['Name']), Version: $($dataReader['Version']))"
+    # Write-Host "Name: $($dataReader['Name']), Version: $($dataReader['Version']))"
 }
 
 $dataReader.Close()
