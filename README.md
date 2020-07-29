@@ -12,7 +12,7 @@ This script demonstrates the usage of object-oriented features in PowerShell. It
 
 #### Synopsis
 
-Sample powershell script for retrieving computer inventory data and storing it in a database.
+Sample powershell script for retrieving computer inventory data and storing it in a database. Demonstrates working with SQL and error handling.
 
 #### Requirements
 
