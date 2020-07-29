@@ -314,6 +314,11 @@ function Install-SqlServerManagementStudio {
 <#
     .SYNOPSIS
     Opens a connection to SQL server and returns the connection object
+    .PARAMETER Server
+    Name of the SQL server. Use syntax servername\instance,port to connect to a 
+    particular instance or to a non-default port. Defaults to localhost.
+    .PARAMETER Database
+    Name of the database to connect to. Defaults to master.
 #>
 function Connect-SqlServer {
     [OutputType([System.Data.SqlClient.SqlConnection])]
@@ -339,6 +344,10 @@ function Connect-SqlServer {
 <#
     .SYNOPSIS
     Executes some SQL command which is not a query and returns the affected rows
+    .PARAMETER Command
+    Non-querying SQL command
+    .PARAMETER Connection
+    SqlConnection object to execute the command on.
 #>
 function Invoke-SqlCommand {
     [OutputType([int32])]
@@ -371,6 +380,10 @@ function Invoke-SqlCommand {
 <#
     .SYNOPSIS
     Creates a new database on the server with default settings.
+    .PARAMETER Name
+    Name of the new database
+    .PARAMETER Server
+    Server, where the database should be created. Defaults to localhost.
 #>
 function New-SqlDatabase {
     [OutputType([int32])]
@@ -400,7 +413,11 @@ function New-SqlDatabase {
 
 <#
     .SYNOPSIS
-    Creates an SQL data reader object using the provided query string
+    Creates an SQL data reader object using the provided query string.
+    .PARAMETER Query
+    SQL query
+    .PARAMETER Connection
+    SqlConnection object to execute the command on.
 #>
 function Get-SqlDataReader {
     [OutputType([System.Data.SqlClient.SqlDataReader])]
