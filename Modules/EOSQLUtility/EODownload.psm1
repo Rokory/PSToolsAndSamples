@@ -55,6 +55,7 @@ function Invoke-BitsTransfer {
                         -Source $sourceItem `
                         -Destination $Destination `
                         -Asynchronous `
+                        -Confirm:$false `
                         -ErrorAction Stop
 
                     # Get resulting local name of download
@@ -96,20 +97,12 @@ function Invoke-BitsTransfer {
         }
     }
     END {
-        # Here we track the progress of all downloads and display progress bars
-        $transferringBitsJobs = $jobs
         # While the BITS jobs are not finished, calculate and write progress
-        while ($transferringBitsJobs.Count -gt 0 ) {
-            # Get all jobs, which are not finished yet
-            $transferringBitsJobs = $jobs |
-                Where-Object { $PSItem.bitsJob.JobState -ne 'Transferred' }
-
-            # Get all finished jobs
-            $finishedBitsJobs = $jobs |
-                Where-Object { $PSItem.bitsJob.JobState -eq 'Transferred' }
-
-            # Update progress bars for unfinished jobs
-            foreach ($job in $transferringBitsJobs) {
+        while ((
+            $jobs.bitsJob | 
+            Where-Object {$PSItem.JobState -ne 'Transferred'}
+        ).Count -gt 0 ) {
+            foreach ($job in $jobs) {
                 # First get the BITS job and the progress
                 $bitsJob = $job.bitsJob
                 $progress = $job.progress
@@ -161,32 +154,27 @@ function Invoke-BitsTransfer {
                     $bytesTotal, `
                     ($speed / 1MB * 8)
                 #endregion
-                # Show progress bar
-                # @ splats the hash table to the parameters of Write-Progress
-                Write-Progress @progress
-            }
 
-            # Complete finished jobs
-            foreach ($job in ($finishedBitsJobs)) {
-                # Get the progress hash table and the BITS job of the
-                # finished job
-                $progress = $job.progress
-                $bitsJob = $job.bitsJob
+                # If job is not transferred, show progress bar
+                if ($job.bitsJob.JobState -ne 'Transferred') {
+                    # @ splats the hash table to the parameters of Write-Progress
+                    Write-Progress @progress
+                }
 
-                # Complete the BITS transfer to remove it from the queue
-                Complete-BitsTransfer -BitsJob $bitsJob
+                # If job is transferred, remove progress bar and job
+                if ($job.bitsJob.JobState -eq 'Transferred') {
 
-                # Hide progress bar by calling it with the Completed switch
-                Write-Progress @progress -Completed
+                    # Hide progress bar by calling it with the Completed switch
+                    Write-Progress @progress -Completed
 
-                # Remove the job from our list, so it does not need to be
-                # processed anymore
-                $jobs.Remove($job)
+                }
             }
 
             # Sleep for 1 second to smoothen the display of the downloaded
             # bytes.
             Start-Sleep -Seconds 1         
         }
+        # Complete the BITS transfers to remove it from the queue
+        $jobs.bitsJob | Complete-BitsTransfer -Confirm:$false
     }
 }
