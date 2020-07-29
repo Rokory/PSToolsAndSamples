@@ -1,3 +1,23 @@
+function Use-Module {
+    [CmdletBinding()]
+    param (
+        [Parameter(
+            ValueFromPipeline = $true, 
+            ValueFromPipelineByPropertyName = $true)
+        ]
+        [string[]]
+        $Name
+    )
+    BEGIN {}
+    PROCESS {
+        foreach ($moduleName in $Name) {
+            if ($null -eq (Get-Module -Name $moduleName)) {
+                Import-Module -Name $moduleName
+            }
+        }
+    }
+    END {}
+}
 <#
     .SYNOPSIS
     Downloads and optionally installs SQL Server 2019
@@ -97,6 +117,10 @@ function Install-SqlServer {
         [String]
         $ConfigurationFile
     )
+
+    # Import required modules
+
+    Use-Module -Name 'BITSDownload' -ErrorAction Stop
 
     #region Download SQL server
 
