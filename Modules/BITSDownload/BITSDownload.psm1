@@ -58,9 +58,6 @@ function Invoke-BitsTransfer {
                         -Confirm:$false `
                         -ErrorAction Stop
 
-                    # Get resulting local name of download
-                    $localName = $bitsJob.FileList[0].LocalName
-                    Write-Verbose "Local name of downloaded file: $localName"
 
                     # Initialize progress calculation
 
@@ -71,8 +68,6 @@ function Invoke-BitsTransfer {
                         Id = Get-Random
                         Activity = "Downloading from $sourceItem to $localName"
                         Status = $bitsJob.JobState
-                        SecondsRemaining = [int32]::MaxValue
-                        PercentComplete = -1
                     }
 
                     # Add job to hash table
@@ -83,6 +78,10 @@ function Invoke-BitsTransfer {
                         bitsJob = $bitsJob
                         progress = $progress
                     }) > $null
+
+                    # Get resulting local name of download
+                    $localName = $bitsJob.FileList[0].LocalName
+                    Write-Verbose "Local name of downloaded file: $localName"
 
                     # Emit the file name to the pipeline
                     $localName
@@ -127,21 +126,24 @@ function Invoke-BitsTransfer {
                 $progress.PercentComplete = `
                     $bytesTransferred / $bytesTotal * 100
 
-                # The progress bar needs the seconds remaining as integer
-                # Therefore, we use the Round function.
-                $secondsRemaining = [System.Math]::Round(
-                    $secondsPassed / ($progress.PercentComplete / 100), 0
-                )
+                $secondsRemaining = $null
+                if ($progress.PercentComplete -ne 0) {
+                    $secondsTotal = `
+                        $secondsPassed / $progress.PercentComplete * 100
+                    # The progress bar needs the seconds remaining as integer
+                    # Therefore, we use the Round function.
+                    $secondsRemaining = [System.Math]::Round(
+                        $secondsTotal - $secondsPassed, 0
+                    )                   
+                }
 
                 # This calculation will result in a speed in bytes/second
                 $speed = $bytesTransferred / $secondsPassed
                 #endregion
 
                 #region Update progress bar parameters
-                # In some cases, e. g. download has not transferred any bytes
-                # yet, seconds remaining could be infinite, therefore, we check
-                # for that.
-                if ($secondsRemaining -le [int]::MaxValue) {
+                if ($null -ne $secondsRemaining) {
+                    # New values can be added to hash table dynamically
                     $progress.SecondsRemaining = $secondsRemaining
                 }
 
@@ -163,10 +165,8 @@ function Invoke-BitsTransfer {
 
                 # If job is transferred, remove progress bar and job
                 if ($job.bitsJob.JobState -eq 'Transferred') {
-
                     # Hide progress bar by calling it with the Completed switch
                     Write-Progress @progress -Completed
-
                 }
             }
 
