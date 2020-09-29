@@ -4,6 +4,10 @@ This repository contains some small scripts, modules and samples.
 
 ## Scripts
 
+### Menu.ps1
+
+Example patter for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs.
+
 ### Classes.ps1
 
 This script demonstrates the usage of object-oriented features in PowerShell. It is recommended to run this in debug mode to understand what's going on. The comments will help understanding the concepts.
