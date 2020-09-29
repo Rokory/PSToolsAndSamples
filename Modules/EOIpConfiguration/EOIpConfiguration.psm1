@@ -31,7 +31,7 @@ Set-NetIpConfiguration -InterfaceAlias Ethernet -Dhcp
 Configures the network interface 'Ethernet' for DHCP.
 #>
 function Set-NetIpConfiguration {
-    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'Medium')]
+    [CmdletBinding(SupportsShouldProcess = $true, ConfirmImpact = 'High')]
     param (
         [Parameter(Mandatory=$true)]
         [String]
@@ -131,6 +131,7 @@ function Set-NetIpConfiguration {
             }
         }
     }
+    Restart-Netadapter -InterfaceAlias $InterfaceAlias -WhatIf:$WhatIfPreference
 }
 
 # Set-NetIpConfiguration `
