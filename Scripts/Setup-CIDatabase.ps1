@@ -2,7 +2,7 @@
     .SYNOPSIS
     Sets up a database for the Computer Inventory example.
 #>
-#Requires -Modules EOSQLUtility
+#Requires -Modules SQLUtility
 
 # The name of the database
 $databaseName = 'Assets'
