@@ -6,12 +6,13 @@
 
 # The name of the database
 $databaseName = 'Assets'
+$server = 'localhost/SQLExpress'
 
 # Create the database
-New-SqlDatabase -Name $databaseName
+New-SqlDatabase -Name $databaseName -Server $server
 
 # Connect to the database
-$sqlConnection = Connect-SqlServer -Database $databaseName
+$sqlConnection = Connect-SqlServer -Database $databaseName -Server $server
 
 # Create a table OperatingSystems
 Invoke-SqlCommand `
