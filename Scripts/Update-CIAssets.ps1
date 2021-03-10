@@ -7,7 +7,7 @@
 #Requires -Modules EOSQLUtility
 
 # The name of the database
-$databaseServer = 'localhost'
+$databaseServer = 'localhost/SQLExpress'
 $databaseName = 'Assets'
 
 # Connect to SQL server
