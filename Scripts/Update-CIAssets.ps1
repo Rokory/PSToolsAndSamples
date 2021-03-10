@@ -4,7 +4,7 @@
     and installed software packages, and stores the information in a database
 #>
 
-#Requires -Modules EOSQLUtility
+#Requires -Modules SQLUtility
 
 # The name of the database
 $databaseServer = 'localhost/SQLExpress'
