@@ -4,12 +4,9 @@ This content of this repository has been moved to various separate repositories.
 
 ## Scripts
 
-<<<<<<< HEAD
-Demonstration scripts for classes, menus and database operations can be found at <https://github.com/Rokory/PSSamples>.
-=======
 ### Menu.ps1
 
-Example patter for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs.
+Example pattern for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs.
 
 ### Classes.ps1
 
