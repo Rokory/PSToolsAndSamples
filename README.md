@@ -27,7 +27,6 @@ Module EOSQLUtility, which you can find in the modules folder.
 1. Install some edition of Microsoft SQL server on the local computer. You can use ````Install-SQLServer```` from the EOSQLUtility module to quickly install an Express edition
 2. Run the Setup-CIDatabase to create the database structure.
 3. Run the Update-CIAssets to store the computer inventory information in the database.
->>>>>>> c30fb90f50dced8d4510beca2bb070cd19c353c5
 
 ## Modules
 
