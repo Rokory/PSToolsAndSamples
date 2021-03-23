@@ -30,4 +30,4 @@ Provides an easy way to set the most common IP configuration settings. Demonstra
 
 ### SQLUtility
 
-Cmdlets to download and install SQL Server 2019 Developer or Express editition, as well as connecting, querying and manipulating databases. Demonstrate the support of the -WhatIf parameter.
+Cmdlets to download and install SQL Server 2019 Developer or Express editition, as well as connecting, querying and manipulating databases. Demonstrate the support of the -WhatIf parameter. Clone it from <https://github.com/Rokory/SQLUtility>.
