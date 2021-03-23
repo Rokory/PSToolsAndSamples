@@ -4,9 +4,7 @@ This content of this repository has been moved to various separate repositories.
 
 ## Scripts
 
-### Menu.ps1
-
-Example pattern for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs.
+Example pattern for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs. Clone from <https://github.com/Rokory/PSSamples>
 
 ### Classes.ps1
 
@@ -14,19 +12,7 @@ This script demonstrates the usage of object-oriented features in PowerShell. It
 
 ### Setup-CIDatabase.ps1 and Update-CIAssets.ps1
 
-#### Synopsis
-
 Sample powershell script for retrieving computer inventory data and storing it in a database. Demonstrates working with SQL and error handling.
-
-#### Requirements
-
-Module EOSQLUtility, which you can find in the modules folder.
-
-#### Getting started
-
-1. Install some edition of Microsoft SQL server on the local computer. You can use ````Install-SQLServer```` from the EOSQLUtility module to quickly install an Express edition
-2. Run the Setup-CIDatabase to create the database structure.
-3. Run the Update-CIAssets to store the computer inventory information in the database.
 
 ## Modules
 
