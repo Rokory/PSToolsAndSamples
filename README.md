@@ -4,7 +4,11 @@ This content of this repository has been moved to various separate repositories.
 
 ## Scripts
 
-Example pattern for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs. Clone from <https://github.com/Rokory/PSSamples>
+Clone the repository with the following sample scripts from <https://github.com/Rokory/PSSamples>
+
+### Menu.ps1
+
+Example pattern for a text-based menu. Demonstrates Write-Host, Read-Host, loops and switch constructs. 
 
 ### Classes.ps1
 
